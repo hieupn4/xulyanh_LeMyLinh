@@ -198,6 +198,35 @@ void phananh3vung()
 	Invalidate();
 
 }
+// phóng đại ảnh lặp
+void phongdaianhlap()
+{
+	// TODO: Add your command handler code here
+	Ccuoiky2Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+        BYTE Y[1000][1000];
+	int M = pDoc->bi.biHeight;
+	int N = pDoc->bi.biWidth;
+	for(int i=0;i<M;i++)
+		{
+            for(int j=0;j<N;j++)
+				{
+					Y[2*i][2*j] = pDoc->X[i][j];
+					Y[2*i][2*j+1] = pDoc->X[i][j];
+				}
+		}
+	for(int i=0;i<2*M;i=i+2)
+		{
+            for(int j=0;j<2*N;j++)
+				Y[i+1][j] =Y[i][j];
+		}
+	pDoc->bi.biHeight = 2*M;
+	pDoc->bi.biWidth = 2*N;
+	for(int i=0;i<2*M;i++)
+		for(int j=0;j<2*N;j++)
+			pDoc->X[i][j] = Y[i][j];
+	Invalidate();
+}
 // phóng đại ảnh tuyến tính
 void phongdaianhtuyentinh()
 {
@@ -281,3 +310,47 @@ void sanbanghistogram()
 			pDoc->X[i][j] = H[pDoc->X[i][j]];
 	Invalidate();
 }
+// hiện his trên dialog
+//chú ý là trước đóp hải tạo một lớp dialog chứa mảng H đã , sau đó thì mới dùng phương thức này để gọi dialog lên
+void hienhistrendialog()
+{
+	Ccuoiky2Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	hieudialog p;
+	for(int i=0;i<256;i++)
+		p.H[i] =0;
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			p.H[pDoc->X[i][j]]++;
+	for(int i=0;i<256;i++)
+		p.H[i] = p.H[i] / ((pDoc->bi.biHeight)*(pDoc->bi.biWidth));
+	p.DoModal();
+}
+//quay trái 90 độ 
+void Ccuoiky1View::quaytrai90do()
+{
+	// TODO: Add your command handler code here
+	Ccuoiky1Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	BYTE Y[1000][1000];
+	
+			int M =pDoc->bi.biHeight;
+			int N =pDoc->bi.biWidth;
+			for(int i=0;i<N;i++)
+				for(int j=0;j<M;j++)
+						Y[i][j]= pDoc->X[j][N-i];
+			for(int i=0;i<N;i++)
+				for(int j=0;j<M;j++)
+					pDoc->X[i][j] = Y[i][j];
+		
+	Invalidate();
+}
+//quay phải 90 độ
+void Ccuoiky1View::quayphai90do()
+{
+	// TODO: Add your command handler code here
+	quaytrai90do();
+	quaytrai90do();
+	quaytrai90do();
+}
+

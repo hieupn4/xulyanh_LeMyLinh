@@ -1,3 +1,4 @@
+// tách biên sử dụng thuật toán Gradient
 void OnChucnangTachbiengra()
 {
 	// TODO: Add your command handler code here
@@ -38,7 +39,7 @@ void OnChucnangTachbiengra()
 
 }
 
-
+//tách biên sử dụng thuật toán laplace
 void OnChucnangTachbienlaplace()
 {
 	// TODO: Add your command handler code here
@@ -73,7 +74,7 @@ void OnChucnangTachbienlaplace()
 		}
 }
 
-
+//tách biên sư dụng thuật toán la bàn
 void OnChucnangTachbienlaban()
 {
 	// TODO: Add your command handler code here
@@ -151,7 +152,7 @@ void OnChucnangTachbienlaban()
 		}
 }
 
-
+// phân ảnh thành 3 vùng
 void phananh3vung()
 {
 	// TODO: Add your command handler code here

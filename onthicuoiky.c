@@ -198,3 +198,86 @@ void phananh3vung()
 	Invalidate();
 
 }
+// phóng đại ảnh tuyến tính
+void phongdaianhtuyentinh()
+{
+	// TODO: Add your command handler code here
+	Conthicuoiky1Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	int i,j,M,N;
+	M=pDoc->bi.biHeight;
+	N=pDoc->bi.biWidth;
+	//Chen them hang moi
+	for(i=M-1;i>=0;i--)
+		for(j=0;j<N;j++)
+		{
+			pDoc->X[2*i][j]=pDoc->X[i][j];
+			if(i==M-1)
+				pDoc->X[2*i+1][j]=pDoc->X[i][j]/2;
+			else
+				pDoc->X[2*i+1][j]=(pDoc->X[i][j]+pDoc->X[i+1][j])/2;
+		}
+        //Chen them cot moi
+	for(j=N-1;j>=0;j--)
+		for(i=0;i<2*M;i++)
+		{
+			pDoc->X[i][2*j]=pDoc->X[i][j];
+			if(j==N-1)
+				pDoc->X[i][2*j+1]=pDoc->X[i][j]/2;
+			pDoc->X[i][2*j+1]=(pDoc->X[i][j]+pDoc->X[i][j+1])/2;
+		}
+        pDoc->bi.biHeight = 2*M;
+	pDoc->bi.biWidth = 2*N;
+	Invalidate();	
+}
+// dãn histogram
+void danhistogram()
+{
+	// TODO: Add your command handler code here
+	Conthicuoiky1Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	int a = 0;
+	int b = 255;
+	int a1 = 50;
+	int b1 = 200;
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+				pDoc->X[i][j] = (b1-a1)*(pDoc->X[i][j])/(b-a) + (b*a1-a*b1)/(b-a);
+	Invalidate();
+}
+
+//san bằng histogram
+void sanbanghistogram()
+{
+	// TODO: Add your command handler code here
+	Conthicuoiky1Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	float H[256]; 
+	for(int i=0;i<256;i++)
+		H[i] =0;
+	if (!pDoc)
+		return;
+	else
+		{
+			for(int i=0;i<pDoc->bi.biHeight;i++)
+				for(int j=0;j<pDoc->bi.biWidth;j++)
+					{
+						H[pDoc->X[i][j]] ++;
+				    }
+			for(int i=0;i<256;i++)
+				{
+					H[i] = H[i] /((pDoc->bi.biHeight)*(pDoc->bi.biWidth));
+				}
+			for(int i=255;i>=0;i--)
+				{
+				   for(int j=i-1;j>=0;j--)
+					   H[i]=H[i] + H[j];
+				   H[i] = (int)(255*H[i]);
+				}
+			
+		}
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			pDoc->X[i][j] = H[pDoc->X[i][j]];
+	Invalidate();
+}

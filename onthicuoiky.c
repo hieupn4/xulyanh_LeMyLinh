@@ -1,3 +1,40 @@
+// khai báo thông số
+public :
+	BITMAPFILEHEADER bf;
+	BITMAPINFOHEADER bi;
+	RGBQUAD mau[256];
+	BYTE X[1000][1000];
+//đọc ảnh
+void ConthickDoc::Serialize(CArchive& ar)
+{
+	ar.Read(&bf,sizeof(BITMAPFILEHEADER));
+	ar.Read(&bi,sizeof(BITMAPINFOHEADER));
+	for(int i=0;i<256;i++)
+		ar.Read(&mau[i],sizeof(RGBQUAD));
+	for(int i=0;i<bi.biHeight;i++)
+		for(int j=0;j<bi.biWidth;j++)
+			ar.Read(&X[i][j],sizeof(BYTE));
+}
+// hiện thị ảnh
+void ConthickView::OnDraw(CDC* pDC)
+{
+	ConthickDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+	BYTE b,R,G,B;
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			{
+				b = pDoc->X[i][j];
+				R = pDoc->mau[b].rgbRed;
+				G = pDoc->mau[b].rgbGreen;
+				B = pDoc->mau[b].rgbBlue;
+				pDC->SetPixel(j,pDoc->bi.biHeight-i,RGB(R,G,B));
+			}
+
+	// TODO: add draw code for native data here
+}
 // tách biên sử dụng thuật toán Gradient
 void OnChucnangTachbiengra()
 {

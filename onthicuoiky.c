@@ -1,3 +1,47 @@
+// isodata
+void ConthickView::OnProcesIsodata()
+{
+	// TODO: Add your command handler code here
+	ConthickDoc* pDoc = GetDocument();
+	 ASSERT_VALID(pDoc);
+	int i,j;
+	int M,N,m1,m2,n1,n2;
+	int TO=255/2;
+	M=pDoc->bi.biHeight;
+	N=pDoc->bi.biWidth;
+	while(1)
+	{
+		m1=m2=0;
+		n1=n2=0;
+		for(i=0;i<M;i++)
+			for(j=0;j<N;j++)
+				if(pDoc->X[i][j]<TO)
+				{
+					n1++;
+					m1+=pDoc->X[i][j];
+				}
+				else
+				{
+					n2++;
+					m2+=pDoc->X[i][j];
+				}
+				m1/=n1;
+				m2/=n2;
+				if(TO==(m1+m2)/2)	break;
+				else
+					TO=(m1+m2)/2;
+	}
+	for(i=0;i<M;i++)
+		for(j=0;j<N;j++)
+		{
+			if(pDoc->X[i][j]<TO)
+				pDoc->X[i][j]=m1;
+			else
+				pDoc->X[i][j]=m2;
+		}
+	Invalidate();
+}
+
 // lọc trung vị
 void ConthickView::loctrungvi()
 {

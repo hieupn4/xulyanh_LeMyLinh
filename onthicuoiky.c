@@ -1,3 +1,47 @@
+// lọc trung vị
+void ConthickView::loctrungvi()
+{
+	// TODO: Add your command handler code here
+	ConthickDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+	BYTE Y[1000][1000];
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			Y[i][j] = pDoc->X[i][j];
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			{
+               float H[3][3] ={{1,1,1},{1,1,1},{1,1,1}}; 
+			   float tg[9];
+			   int dem=0;
+			   for(int l=0;l<3;l++)
+				   for(int k=0;k<3;k++)
+					   {
+						   H[l][k] = H[l][k]*pDoc->X[i-l+1][j-k+1];
+						   tg[dem] = pDoc->X[i-l+1][j-k+1];
+						   dem++;
+					   }
+			   for(int l=0;l<8;l++)
+				   for(int k=l+1;k<9;k++)
+					   {
+                           float trunggian;
+						   if(tg[l]>tg[k])
+							   {
+                                    trunggian = tg[l];
+									tg[l]=tg[k];
+									tg[k]=trunggian;
+							   }
+					   }
+			   Y[i][j]=tg[4];
+			}
+	for(int i=0;i<pDoc->bi.biHeight;i++)
+		for(int j=0;j<pDoc->bi.biWidth;j++)
+			pDoc->X[i][j] = Y[i][j];
+	Invalidate();
+}
+
 // khai báo thông số
 public :
 	BITMAPFILEHEADER bf;
